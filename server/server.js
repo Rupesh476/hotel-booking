@@ -10,16 +10,18 @@ connectDB();
 const app = express();
 app.use(cors());
 
-// 🟢 Webhook route must come BEFORE body parsers or middleware
-app.post("/api/clerk", express.raw({ type: "*/*" }), clerkWebhooks);
+//  Webhook route must come BEFORE body parsers or middleware
+app.use("/api/clerk", clerkWebhooks);
 
-// 🟢 JSON parser AFTER webhook
+//  JSON parser AFTER webhook
 app.use(express.json());
 
-// 🟢 Clerk middleware AFTER webhook
+//  Clerk middleware AFTER webhook
 app.use(clerkMiddleware());
 
-// ✅ Regular routes
+app.use("/api/clerk", clerkWebhooks);
+
+//  Regular routes
 app.get('/', (req, res) => res.send("API is working"));
 
 const PORT = process.env.PORT || 3000;
