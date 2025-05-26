@@ -16,14 +16,14 @@ connectClodinary()
 const app = express();
 app.use(cors());
 
-//  Clerk webhook route - raw body needed
-app.post("/api/clerk", express.raw({ type: 'application/json' }), clerkWebhooks);
-
-//  JSON parser for all other routes
-app.use(express.json());
 
 //  Clerk auth middleware
+app.use(express.json());
 app.use(clerkMiddleware());
+
+//api to listen to clerk webhooks
+app.use('/api/clerk', clerkWebhooks);
+
 
 //api routers
 app.use('/api/user', userRouter)
